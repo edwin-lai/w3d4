@@ -30,9 +30,22 @@ class Question < ActiveRecord::Base
 
   def results
     results_hash = {}
-    self.answer_choices.includes(:responses).each do |answer|
-      results_hash[answer.answer_choice] = answer.responses.length
+    results = AnswerChoice.find_by_sql(<<-SQL)
+      SELECT
+        answer_choices.*, COUNT(responses.id) AS num_responses
+      FROM
+        answer_choices
+      LEFT OUTER JOIN
+        responses ON responses.answer_choice_id = answer_choices.id
+      WHERE
+        answer_choices.question_id = #{id}
+      GROUP BY
+        answer_choices.id
+    SQL
+    results.each do |answer_choice|
+      results_hash[answer_choice.answer_choice] = answer_choice.num_responses
     end
     results_hash
   end
+
 end
