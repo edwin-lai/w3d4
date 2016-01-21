@@ -5,9 +5,24 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-100.times { User.create!(user_name: Faker::name) }
+10.times { User.create!(user_name: Faker::Name.name) }
 
-200.times { Poll.create!(
-  title: Faker::Hipster.sentence,
-  author_id: Random.new.rand(1..100)
+20.times { Poll.create!(
+  title: Faker::Hipster.words(Random.new.rand(3..7)).join(" ").capitalize,
+  author_id: Random.new.rand(1..10)
+  ) }
+
+100.times { Question.create!(
+  poll_id: Random.new.rand(1..20),
+  question: Faker::Hipster.sentence
+  ) }
+
+400.times { AnswerChoice.create!(
+  question_id: Random.new.rand(1..100),
+  answer_choice: Faker::Hacker.say_something_smart
+  ) }
+
+800.times { Response.create!(
+  user_id: Random.new.rand(1..10),
+  answer_choice_id: Random.new.rand(1..400)
   ) }
